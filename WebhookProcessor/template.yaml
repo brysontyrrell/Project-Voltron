@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Creates a webhook processor for Jamf Pro. Received webhook events are sent to an SNS topic.
+
+Parameters:
+
+  AccessToken:
+    Type: String
+    Default: ''
+    Description: Optional string to secure the API using an 'access_token' query string parameter.
+
+Resources:
+
+  JamfWebhookTopic:
+    Type: AWS::SNS::Topic
+
+  WebhookProcessor:
+    Type: AWS::Serverless::Function
+    Description: Processes webhook events and publishes to an SNS topic.
+    Properties:
+      Runtime: python3.6
+      Handler: webhook_processor.lambda_handler
+      CodeUri: ./src/functions/webhook_processor
+      Environment:
+        Variables:
+          ACCESS_TOKEN: !Ref AccessToken
+          WEBHOOK_TOPIC: !Ref JamfWebhookTopic
+      Policies:
+        Statement:
+          - Effect: Allow
+            Action: sns:Publish
+            Resource: !Ref JamfWebhookTopic
+      Events:
+        Post:
+          Type: Api
+          Properties:
+            Path: /
+            Method: post
+
+Outputs:
+
+  JamfWebhookTopic:
+    Value: !Ref JamfWebhookTopic
+    Export:
+      Name: !Sub '${AWS::StackName}-JamfWebhookTopic'
