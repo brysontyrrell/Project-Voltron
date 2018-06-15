@@ -40,10 +40,14 @@ If you want to send notifications to multiple Slack channels you just need to ad
 * Credentials
     - Save a Jamf Pro account username and password into Parameter Store for use by other components that call the Jamf Pro API.
 
+![Component Diagrams](images/Credentials.png)
+
 * Poller
     - Run scheduled read operations using the Jamf Pro API.
         + Smart Groups
         + Advanced Searches
+
+![Component Diagrams](images/Poller.png)
 
 * Populator
     - Attach to a Webhook Processor.
