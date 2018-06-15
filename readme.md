@@ -25,41 +25,44 @@ If you want to send notifications to multiple Slack channels you just need to ad
 
 ## Components:
 
-* Webhook Receiver
-    - Creates an API Gateway to receive webhook events.
-    - Creates SNS topic to publish events to.
+### Webhook Receiver
+- Creates an API Gateway to receive webhook events.
+- Creates SNS topic to publish events to.
 
 ![Component Diagrams](images/WebhookProcessor.png)
     
-* Slack Notification
-    - Attach to a Webhook Processor to send notifications to a Slack channel.
-    - Events can be filtered to prevent notifications.
+### Slack Notification
+- Attach to a Webhook Processor to send notifications to a Slack channel.
+- Events can be filtered to prevent notifications.
 
 ![Component Diagrams](images/SlackNotification.png)
 
-* Credentials
-    - Save a Jamf Pro account username and password into Parameter Store for use by other components that call the Jamf Pro API.
+### Credentials
+- Save a Jamf Pro account username and password into Parameter Store for use by other components that call the Jamf Pro API.
 
 ![Component Diagrams](images/Credentials.png)
 
-* Poller
-    - Run scheduled read operations using the Jamf Pro API.
-        + Smart Groups
-        + Advanced Searches
+### Poller
+- Run scheduled read operations using the Jamf Pro API.
+    + Smart Groups
+    + Advanced Searches
+- Creates SNS topic to publish API results to.
 
 ![Component Diagrams](images/Poller.png)
 
-* Populator
-    - Attach to a Webhook Processor.
-        + Computer/Mobile Devices only.
-    - Perform a return PUT operation on a device record if the serial number exists in an S3 data source.
-    - Requires a JSON/CSV file in a S3 bucket.
+### Populator
+- Attach to a Webhook Processor.
+    + Computer/Mobile Devices only.
+- Perform a return PUT operation on a device record if the serial number exists in an S3 data source.
+- Requires a JSON/CSV file in a S3 bucket.
 
 ![Component Diagrams](images/Populator.png)
 
-* Custom HTTP Passthrough
-    - Passthrough posting of a Jamf Pro webhook to another HTTP resource.
-    - Can customize the passthrough request headers.
+### Custom HTTP Passthrough
+- Passthrough posting of a Jamf Pro webhook to another HTTP resource.
+- Can customize the passthrough request headers.
+- Attach to either a Webhook Receiver or Poller.
 
-* Custom Function
-    - Provide the name of another Lambda function in your AWS account to invoke on an event.
+### Custom Function
+- Provide the name of another Lambda function in your AWS account to invoke on an event.
+- Attach to either a Webhook Receiver or Poller.
