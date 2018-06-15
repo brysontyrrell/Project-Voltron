@@ -1,6 +1,6 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
-Description: Creates a webhook processor for Jamf Pro. Received webhook events are sent to an SNS topic.
+Description: Creates a webhook receiver for Jamf Pro.
 
 Parameters:
 
@@ -14,13 +14,13 @@ Resources:
   JamfWebhookTopic:
     Type: AWS::SNS::Topic
 
-  WebhookProcessor:
+  WebhookReceiver:
     Type: AWS::Serverless::Function
-    Description: Processes webhook events and publishes to an SNS topic.
+    Description: Recieves webhook events and publishes to an SNS topic.
     Properties:
       Runtime: python3.6
-      Handler: webhook_processor.lambda_handler
-      CodeUri: ./src/functions/webhook_processor
+      Handler: webhook_receiver.lambda_handler
+      CodeUri: ./src/functions/webhook_receiver
       Environment:
         Variables:
           ACCESS_TOKEN: !Ref AccessToken
