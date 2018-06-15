@@ -9,6 +9,18 @@ Parameters:
     Default: ''
     Description: Optional string to secure the API using an 'access_token' query string parameter.
 
+  WebhookUsername:
+    Type: String
+    Default: ''
+    Description: Optional username to secure the API using basic authentication (requires 'WebhookPassword').
+
+  WebhookPassword:
+    Type: String
+    Default: ''
+    Description: Optional password to secure the API using basic authentication (requires 'WebhookUsername').
+    NoEcho: true
+
+
 Resources:
 
   JamfWebhookTopic:
@@ -24,6 +36,8 @@ Resources:
       Environment:
         Variables:
           ACCESS_TOKEN: !Ref AccessToken
+          USERNAME: !Ref WebhookUsername
+          PASSWORD: !Ref WebhookPassword
           WEBHOOK_TOPIC: !Ref JamfWebhookTopic
       Policies:
         Statement:
