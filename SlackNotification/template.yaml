@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+
+Parameters:
+
+  WebhookProcessorStack:
+    Type: String
+    Description: The CloudFormation stack name for the Webhook Processor to attach to.
+
+  SlackWebhookUrl:
+    Type: String
+    Description: The URL of an Inbound Webhook to a Slack channel.
+
+  IgnoredEvents:
+    Type: CommaDelimitedList
+    Description: Jamf Pro webhook events to not send notifications for.
+    Default: ''
+
+Resources:
+
+  SlackNotification:
+    Type: AWS::Serverless::Function
+    Description: Processes webhook events and publishes to an SNS topic.
+    Properties:
+      Runtime: python3.6
+      Handler: slack_notification.lambda_handler
+      CodeUri: ./src/functions/slack_notification
+      Environment:
+        Variables:
+          SLACK_WEBHOOK_URL: !Ref SlackWebhookUrl
+          IGNORED_EVENTS:
+            Fn::Join: [ ",", !Ref IgnoredEvents ]
+      Events:
+        WebhookEvents:
+          Type: SNS
+          Properties:
+            Topic:
+              Fn::ImportValue: !Sub '${WebhookProcessorStack}-JamfWebhookTopic'
