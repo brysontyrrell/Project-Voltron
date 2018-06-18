@@ -26,7 +26,7 @@ Assume this Slack integration was built to notify a channel about device enrollm
 
 ![Example Diagrams](images/Example02.png)
 
-The Populator and Credentials components are added onto the existing integration without having to make changes or updates to the pre-existing ones. Now, as the Slack channel is being notified the device record is being automatically updated.
+The Populator component is added onto the existing integration without having to make changes or updates to the pre-existing ones. Now, as the Slack channel is being notified the device record is being automatically updated.
 
 ## Components:
 
@@ -36,26 +36,21 @@ The Populator and Credentials components are added onto the existing integration
 - Supports optional token authentication (as a query string parameter).
 - Supports basic authentication (username:password).
 
-![Component Diagrams](images/WebhookReceiver.png)
+![Component Diagrams](WebhookReceiver/WebhookReceiver.png)
     
 ### Slack Notification
 - Attach to a Webhook Processor to send notifications to a Slack channel.
 - Events can be filtered to prevent notifications.
 
-![Component Diagrams](images/SlackNotification.png)
+![Component Diagrams](SlackNotification/SlackNotification.png)
 
-### Credentials
-- Save a Jamf Pro account username and password into Parameter Store for use by other components that call the Jamf Pro API.
-
-![Component Diagrams](images/Credentials.png)
-
-### Poller _(Planned)_
+### Poller
 - Run scheduled read operations using the Jamf Pro API.
     + Smart Groups
     + Advanced Searches
 - Creates SNS topic to publish API results to.
 
-![Component Diagrams](images/Poller.png)
+![Component Diagrams](Poller/Poller.png)
 
 ### Populator _(Planned)_
 - Attach to a Webhook Processor.
