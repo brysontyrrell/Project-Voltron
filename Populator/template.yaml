@@ -1,12 +1,16 @@
 AWSTemplateFormatVersion: 2010-09-09
 Transform: AWS::Serverless-2016-10-31
-Description: Updates device records in Jamf Pro from a JSON/CSV file in S3.
+Description: Updates device records in Jamf Pro from a CSV file in S3.
 
 Parameters:
 
+  WebhookProcessorStack:
+    Type: String
+    Description: The CloudFormation stack name for the Webhook Processor to attach to.
+
   SourceFile:
     Type: String
-    Description: The name of the file (with extension: .json or .csv only) in S3 to read from.
+    Description: The name of the file - CSV only - in S3 to read from.
 
   DeviceType:
     Type: String
@@ -45,9 +49,9 @@ Resources:
     Type: AWS::Serverless::Function
     Description:
     Properties:
-      Handler: poller.lambda_handler
+      Handler: populator.lambda_handler
       Runtime: python3.6
-      CodeUri: ./src/functions/poller
+      CodeUri: ./src/functions/populator
       Timeout: 60
       Environment:
         Variables:
@@ -62,6 +66,12 @@ Resources:
       Policies:
         - S3ReadPolicy:
             BucketName: !GetAtt JamfPopulatorBucket
+      Events:
+        WebhookEvents:
+          Type: SNS
+          Properties:
+            Topic:
+              Fn::ImportValue: !Sub '${WebhookProcessorStack}-JamfWebhookTopic'
 
 Outputs:
 
