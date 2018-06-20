@@ -62,10 +62,10 @@ Resources:
           JSS_DOMAIN: !Ref JamfProDomain
           DEVICE_TYPE: !Ref DeviceType
           XML_ROOT:
-            Fn::FindInMap: ['XmlRoot', !Ref DeviceType, 'URI']
+            Fn::FindInMap: ['XmlRoot', !Ref DeviceType, 'Root']
       Policies:
         - S3ReadPolicy:
-            BucketName: !GetAtt JamfPopulatorBucket
+            BucketName: !Ref JamfPopulatorBucket
       Events:
         WebhookEvents:
           Type: SNS

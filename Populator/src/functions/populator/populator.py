@@ -100,7 +100,7 @@ def generate_xml(data):
     location = ET.SubElement(xml_root, 'location')
     purchasing = ET.SubElement(xml_root, 'purchasing')
 
-    for key, value in data.items():
+    for key, value in data.items():  # Write custom logic for specific fields (site_id/name, bools, date)
         if key in XML_KEY_MAP.keys():
             element, path = XML_KEY_MAP[key].split('/')
             if element == 'general':
@@ -166,7 +166,7 @@ def lambda_handler(event, context):
                 logger.error('Invalid data passed by SNS notification')
                 return {}
 
-            if not is_valid_event(event):
+            if not is_valid_event(webhook_data):
                 logger.info('The webhook event is not supported.')
                 return {}
 
