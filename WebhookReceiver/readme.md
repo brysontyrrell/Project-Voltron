@@ -9,4 +9,5 @@
 
 ### Works With
 
+- Populator
 - Slack Notification

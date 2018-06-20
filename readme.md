@@ -39,7 +39,7 @@ The Populator component is added onto the existing integration without having to
 ![Component Diagrams](WebhookReceiver/WebhookReceiver.png)
     
 ### Slack Notification
-- Attach to a Webhook Processor to send notifications to a Slack channel.
+- Attach to a Webhook Receiver to send notifications to a Slack channel.
 - Events can be filtered to prevent notifications.
 
 ![Component Diagrams](SlackNotification/SlackNotification.png)
@@ -52,15 +52,16 @@ The Populator component is added onto the existing integration without having to
 
 ![Component Diagrams](Poller/Poller.png)
 
-### Populator _(Planned)_
-- Attach to a Webhook Processor.
-    + Computer/Mobile Devices only.
+### Populator
+- Attach to a Webhook Receiver.
+    + Processes ComputerAdded/MobileDeviceEnrolled events only.
 - Perform a return PUT operation on a device record if the serial number exists in an S3 data source.
 - Requires a JSON/CSV file in a S3 bucket.
 
 ![Component Diagrams](images/Populator.png)
 
 ### Reporter _(Planned)_
+- Attach to a Poller.
 - Send email containing the results of a Poller in a variety of formats:
     + HTML table
     + CSV

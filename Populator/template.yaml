@@ -1,0 +1,71 @@
+AWSTemplateFormatVersion: 2010-09-09
+Transform: AWS::Serverless-2016-10-31
+Description: Updates device records in Jamf Pro from a JSON/CSV file in S3.
+
+Parameters:
+
+  SourceFile:
+    Type: String
+    Description: The name of the file (with extension: .json or .csv only) in S3 to read from.
+
+  DeviceType:
+    Type: String
+    Description: Process Computer or Mobile Device updates.
+    AllowedValues:
+      - Computers
+      - MobileDevices
+
+  JamfProDomain:
+    Type: String
+    Description: The domain name for the Jamf Pro server (e.g. jamf.my.org).
+
+  JamfProUsername:
+    Type: String
+    Description: Username for Jamf Pro API access.
+
+  JamfProPassword:
+    Type: String
+    Description: Password for Jamf Pro API access.
+    NoEcho: true
+
+Mappings:
+
+  XmlRoot:
+    Computers:
+      Root: computer
+    MobileDevices:
+      Root: mobile_device
+
+Resources:
+
+  JamfPopulatorBucket:
+    Type: AWS::S3::Bucket
+
+  Populator:
+    Type: AWS::Serverless::Function
+    Description:
+    Properties:
+      Handler: poller.lambda_handler
+      Runtime: python3.6
+      CodeUri: ./src/functions/poller
+      Timeout: 60
+      Environment:
+        Variables:
+          BUCKET_NAME: !Ref JamfPopulatorBucket
+          SOURCE_FILE: !Ref SourceFile
+          JSS_USERNAME: !Ref JamfProUsername
+          JSS_PASSWORD: !Ref JamfProPassword
+          JSS_DOMAIN: !Ref JamfProDomain
+          DEVICE_TYPE: !Ref DeviceType
+          XML_ROOT:
+            Fn::FindInMap: ['XmlRoot', !Ref DeviceType, 'URI']
+      Policies:
+        - S3ReadPolicy:
+            BucketName: !GetAtt JamfPopulatorBucket
+
+Outputs:
+
+  JamfPopulatorBucket:
+    Value: !Ref JamfPopulatorBucket
+    Export:
+      Name: !Sub '${AWS::StackName}-JamfPopulatorBucket'
